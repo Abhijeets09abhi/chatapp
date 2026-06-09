@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChatApp</title>
+
+    <style>
+
+        *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:Arial,sans-serif;
+        }
+
+        body{
+        display:flex;
+        height:100vh;
+        background:#ece5dd;
+        }
+
+        /* Sidebar */
+
+        .sidebar{
+        width:30%;
+        background:#202c33;
+        color:white;
+        overflow-y:auto;
+        }
+
+        .search-box{
+        padding:10px;
+        background:#111b21;
+        }
+
+        .search-box input{
+        width:100%;
+        padding:10px;
+        border:none;
+        border-radius:20px;
+        outline:none;
+        }
+
+        .profile{
+        padding:15px;
+        background:#111b21;
+        display:flex;
+        align-items:center;
+        gap:10px;
+        }
+
+        .profile img{
+        width:50px;
+        height:50px;
+        border-radius:50%;
+        }
+
+        .friend{
+        padding:15px;
+        display:flex;
+        align-items:center;
+        gap:10px;
+        cursor:pointer;
+        border-bottom:1px solid #2a3942;
+        }
+
+        .friend:hover{
+        background:#2a3942;
+        }
+
+        .friend img{
+        width:45px;
+        height:45px;
+        border-radius:50%;
+        }
+
+        .badge{
+        background:red;
+        padding:3px 8px;
+        border-radius:50%;
+        margin-left:auto;
+        }
+
+        /* Chat Area */
+
+        .chat-area{
+        width:70%;
+        display:flex;
+        flex-direction:column;
+        }
+
+        .header{
+        background:#128C7E;
+        color:white;
+        padding:15px;
+        display:flex;
+        align-items:center;
+        gap:10px;
+        }
+
+        .header img{
+        width:45px;
+        height:45px;
+        border-radius:50%;
+        }
+
+        .status{
+        font-size:12px;
+        color:#d4f7d4;
+        }
+
+        .messages{
+        flex:1;
+        padding:20px;
+        overflow-y:auto;
+        background:#ece5dd;
+        }
+
+        .received{
+        background:white;
+        padding:10px;
+        margin:10px 0;
+        border-radius:10px;
+        width:fit-content;
+        max-width:300px;
+        }
+
+        .sent{
+        background:#d9fdd3;
+        padding:10px;
+        margin:10px 0;
+        margin-left:auto;
+        border-radius:10px;
+        width:fit-content;
+        max-width:300px;
+        }
+
+        .time{
+        display:block;
+        font-size:10px;
+        color:gray;
+        margin-top:5px;
+        }
+
+        #typing{
+        padding-left:20px;
+        color:gray;
+        font-style:italic;
+        }
+
+        .input-area{
+        display:flex;
+        padding:10px;
+        background:#f0f2f5;
+        }
+
+        .input-area input{
+        flex:1;
+        padding:12px;
+        border:none;
+        border-radius:20px;
+        outline:none;
+        }
+
+        .input-area button{
+        margin-left:5px;
+        padding:12px 15px;
+        background:#128C7E;
+        color:white;
+        border:none;
+        border-radius:20px;
+        cursor:pointer;
+        }
+
+        .input-area button:hover{
+        background:#0f7267;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+    <div class="search-box">
+        <input
+                type="text"
+                id="search"
+                placeholder="Search chats"
+                onkeyup="searchFriend()">
+    </div>
+
+    <div class="profile">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+        <div>
+            <h3>You</h3>
+            <p>Online</p>
+        </div>
+    </div>
+
+    <div class="friend" onclick="changeChat('Rahul')">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+        <span>Rahul</span>
+        <span class="badge">3</span>
+    </div>
+
+    <div class="friend" onclick="changeChat('Priya')">
+        <img src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png">
+        <span>Priya</span>
+        <span class="badge">1</span>
+    </div>
+
+    <div class="friend" onclick="changeChat('Aman')">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+        <span>Aman</span>
+    </div>
+
+</div>
+
+<!-- Chat Area -->
+
+<div class="chat-area">
+
+    <div class="header">
+
+        <img id="chatPhoto"
+             src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+        <div>
+            <h3 id="chatHeader">Rahul</h3>
+            <div class="status" id="status">
+                Online
+            </div>
+        </div>
+
+    </div>
+
+    <div class="messages" id="messages">
+
+        <div class="received">
+            Hello 👋
+            <span class="time">10:30 PM</span>
+        </div>
+
+    </div>
+
+    <div id="typing"></div>
+
+    <div class="input-area">
+
+        <input
+                type="text"
+                id="messageInput"
+                placeholder="Type a message">
+
+        <button onclick="addEmoji()">😊</button>
+
+        <button onclick="sendMessage()">
+            Send
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+    function sendMessage(){
+
+    let msg =
+    document.getElementById("messageInput").value;
+
+    if(msg.trim()===""){
+    return;
+    }
+
+    let area =
+    document.getElementById("messages");
+
+    let time =
+    new Date().toLocaleTimeString();
+
+    area.innerHTML +=
+    `
+    <div class="sent">
+    ${msg}
+    <span class="time">
+    ${time} ✓✓
+    </span>
+    </div>
+    `;
+
+    document.getElementById(
+    "messageInput").value="";
+
+    area.scrollTop =
+    area.scrollHeight;
+
+    setTimeout(()=>{
+
+    area.innerHTML +=
+    `
+    <div class="received">
+    Okay 👍
+    <span class="time">
+    ${new Date().toLocaleTimeString()}
+    </span>
+    </div>
+    `;
+
+    area.scrollTop =
+    area.scrollHeight;
+
+    },1000);
+
+    }
+
+    function changeChat(name){
+
+    document.getElementById(
+    "chatHeader").innerText=name;
+
+    let statuses={
+    "Rahul":"Online",
+    "Priya":"Typing...",
+    "Aman":"Last seen today at 9:45 PM"
+    };
+
+    document.getElementById(
+    "status").innerText=
+    statuses[name];
+
+    let photo=
+    document.getElementById(
+    "chatPhoto");
+
+    if(name==="Priya"){
+
+    photo.src=
+    "https://cdn-icons-png.flaticon.com/512/4140/4140048.png";
+
+    }else{
+
+    photo.src=
+    "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+
+    }
+
+    document.getElementById(
+    "messages").innerHTML=
+    `
+    <div class="received">
+    Chat switched to ${name}
+    <span class="time">
+    ${new Date().toLocaleTimeString()}
+    </span>
+    </div>
+    `;
+
+    }
+
+    function addEmoji(){
+
+    document.getElementById(
+    "messageInput").value += "😊";
+
+    }
+
+    document.getElementById(
+    "messageInput")
+    .addEventListener(
+    "keypress",
+    function(e){
+
+    if(e.key==="Enter"){
+    sendMessage();
+    }
+
+    });
+
+    document.getElementById(
+    "messageInput")
+    .oninput=function(){
+
+    document.getElementById(
+    "typing").innerText=
+    "Typing...";
+
+    setTimeout(()=>{
+
+    document.getElementById(
+    "typing").innerText="";
+
+    },1000);
+
+    };
+
+    function searchFriend(){
+
+    let value=
+    document.getElementById(
+    "search")
+    .value.toLowerCase();
+
+    let friends=
+    document.querySelectorAll(
+    ".friend");
+
+    friends.forEach(friend=>{
+
+    if(friend.innerText
+    .toLowerCase()
+    .includes(value)){
+
+    friend.style.display=
+    "flex";
+
+    }else{
+
+    friend.style.display=
+    "none";
+
+    }
+
+    });
+
+    }
+
+</script>
+
+</body>
+</html>
