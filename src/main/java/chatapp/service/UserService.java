@@ -11,7 +11,22 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    // FOR REGISTRATION
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
+
+    // FOR LOGIN
+    public User login(String email, String password) {
+
+        User user = userRepository.findByEmail(email);
+
+        if (user != null &&
+                user.getPassword().equals(password)) {
+
+            return user;
+        }
+
+        return null;
     }
 }

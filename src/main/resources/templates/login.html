@@ -54,19 +54,23 @@
 
     <h2>ChatApp Login</h2>
 
-    <form action="/chat">
+    <form action="/login" method="post">
 
         <input type="text"
-               placeholder="Username"
+               name="email"
+               placeholder="Email"
                required>
 
         <input type="password"
+               name="password"
                placeholder="Password"
                required>
 
         <button type="submit">
             Login
         </button>
+
+    </form>
 
     </form>
 

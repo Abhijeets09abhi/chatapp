@@ -42,4 +42,19 @@ public class HomeController {
 
         return "redirect:/";
     }
+
+    // ADD THIS METHOD HERE
+    @PostMapping("/login")
+    public String loginUser(
+            @RequestParam String email,
+            @RequestParam String password) {
+
+        User user = userService.login(email, password);
+
+        if (user != null) {
+            return "chat";
+        }
+
+        return "login";
+    }
 }
