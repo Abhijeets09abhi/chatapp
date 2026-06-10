@@ -71,6 +71,11 @@ public class HomeController {
             @RequestParam String receiver,
             @RequestParam String message) {
 
+        System.out.println("SEND METHOD CALLED");
+        System.out.println(sender);
+        System.out.println(receiver);
+        System.out.println(message);
+
         Message msg = new Message();
 
         msg.setSender(sender);

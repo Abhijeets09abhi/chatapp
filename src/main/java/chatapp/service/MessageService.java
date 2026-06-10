@@ -12,6 +12,11 @@ public class MessageService {
     private MessageRepository messageRepository;
 
     public void saveMessage(Message message) {
+
+        System.out.println("Saving message...");
+
         messageRepository.save(message);
+
+        System.out.println("Message saved!");
     }
 }
