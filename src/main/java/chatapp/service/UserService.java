@@ -21,12 +21,27 @@ public class UserService {
 
         User user = userRepository.findByEmail(email);
 
-        if (user != null &&
+        System.out.println("EMAIL ENTERED = " + email);
+
+        if(user != null) {
+            System.out.println("EMAIL FOUND");
+            System.out.println("DB PASSWORD = " + user.getPassword());
+            System.out.println("ENTERED PASSWORD = " + password);
+        } else {
+            System.out.println("EMAIL NOT FOUND");
+        }
+
+        if(user != null &&
                 user.getPassword().equals(password)) {
+
+            System.out.println("LOGIN SUCCESS");
 
             return user;
         }
 
+        System.out.println("LOGIN FAILED");
+
         return null;
     }
-}
+    }
+

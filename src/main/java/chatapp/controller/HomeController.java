@@ -1,7 +1,10 @@
 package chatapp.controller;
 
+import chatapp.entity.Message;
 import chatapp.entity.User;
+import chatapp.service.MessageService;
 import chatapp.service.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +14,9 @@ public class HomeController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MessageService messageService;
 
     @GetMapping("/")
     public String login() {
@@ -34,6 +40,7 @@ public class HomeController {
             @RequestParam String password) {
 
         User user = new User();
+
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(password);
@@ -43,7 +50,6 @@ public class HomeController {
         return "redirect:/";
     }
 
-    // ADD THIS METHOD HERE
     @PostMapping("/login")
     public String loginUser(
             @RequestParam String email,
@@ -52,9 +58,33 @@ public class HomeController {
         User user = userService.login(email, password);
 
         if (user != null) {
-            return "chat";
+            return "redirect:/chat";
         }
 
         return "login";
+    }
+
+    @PostMapping("/send")
+    @ResponseBody
+    public String sendMessage(
+            @RequestParam String sender,
+            @RequestParam String receiver,
+            @RequestParam String message) {
+
+        Message msg = new Message();
+
+        msg.setSender(sender);
+        msg.setReceiver(receiver);
+        msg.setMessage(message);
+
+        messageService.saveMessage(msg);
+
+        return "saved";
+    }
+
+    @GetMapping("/hello")
+    @ResponseBody
+    public String hello() {
+        return "HELLO";
     }
 }

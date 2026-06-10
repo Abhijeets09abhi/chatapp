@@ -268,55 +268,55 @@
 
 <script>
 
-    function sendMessage(){
+    function sendMessage() {
 
     let msg =
     document.getElementById("messageInput").value;
 
-    if(msg.trim()===""){
-    return;
+    if(msg.trim() === ""){
+        return;
     }
 
-    let area =
-    document.getElementById("messages");
+    fetch("/send", {
+        method: "POST",
+        headers: {
+            "Content-Type":
+            "application/x-www-form-urlencoded"
+        },
+        body:
+            "sender=Abhijeet" +
+            "&receiver=" +
+            document.getElementById("chatHeader").innerText +
+            "&message=" +
+            encodeURIComponent(msg)
+    })
+    .then(response => response.text())
+    .then(data => {
 
-    let time =
-    new Date().toLocaleTimeString();
+        console.log(data);
 
-    area.innerHTML +=
-    `
-    <div class="sent">
-    ${msg}
-    <span class="time">
-    ${time} ✓✓
-    </span>
-    </div>
-    `;
+        let area =
+        document.getElementById("messages");
 
-    document.getElementById(
-    "messageInput").value="";
+        let time =
+        new Date().toLocaleTimeString();
 
-    area.scrollTop =
-    area.scrollHeight;
+        area.innerHTML += `
+        <div class="sent">
+            ${msg}
+            <span class="time">
+                ${time}
+            </span>
+        </div>
+        `;
 
-    setTimeout(()=>{
+        document.getElementById(
+        "messageInput").value="";
 
-    area.innerHTML +=
-    `
-    <div class="received">
-    Okay 👍
-    <span class="time">
-    ${new Date().toLocaleTimeString()}
-    </span>
-    </div>
-    `;
-
-    area.scrollTop =
-    area.scrollHeight;
-
-    },1000);
-
-    }
+        area.scrollTop =
+        area.scrollHeight;
+    });
+}
 
     function changeChat(name){
 
