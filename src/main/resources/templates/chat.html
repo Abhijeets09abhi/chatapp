@@ -196,7 +196,7 @@
     <div class="profile">
         <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
         <div>
-            <h3>You</h3>
+            <h3 id="myName">Loading...</h3>
             <p>Online</p>
         </div>
     </div>
@@ -277,6 +277,9 @@
         return;
     }
 
+    let currentFriend =
+    document.getElementById("chatHeader").innerText;
+
     fetch("/send", {
         method: "POST",
         headers: {
@@ -284,9 +287,8 @@
             "application/x-www-form-urlencoded"
         },
         body:
-            "sender=Abhijeet" +
-            "&receiver=" +
-            document.getElementById("chatHeader").innerText +
+            "receiver=" +
+            encodeURIComponent(currentFriend) +
             "&message=" +
             encodeURIComponent(msg)
     })
@@ -311,11 +313,13 @@
         `;
 
         document.getElementById(
-        "messageInput").value="";
+        "messageInput").value = "";
 
         area.scrollTop =
         area.scrollHeight;
+
     });
+
 }
 
     function changeChat(name){
@@ -325,7 +329,7 @@
 
     let statuses={
     "Rahul":"Online",
-    "Priya":"Typing...",
+    "Priya":"typing...",
     "Aman":"Last seen today at 9:45 PM"
     };
 
@@ -428,6 +432,15 @@
     });
 
     }
+    fetch("/current-user")
+.then(response => response.text())
+.then(username => {
+
+    document.getElementById(
+    "myName").innerText =
+    username;
+
+});
 
 </script>
 

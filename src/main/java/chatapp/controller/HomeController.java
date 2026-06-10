@@ -4,7 +4,7 @@ import chatapp.entity.Message;
 import chatapp.entity.User;
 import chatapp.service.MessageService;
 import chatapp.service.UserService;
-
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -53,11 +53,17 @@ public class HomeController {
     @PostMapping("/login")
     public String loginUser(
             @RequestParam String email,
-            @RequestParam String password) {
+            @RequestParam String password,
+            HttpSession session) {
 
         User user = userService.login(email, password);
 
         if (user != null) {
+
+            session.setAttribute(
+                    "loggedUser",
+                    user.getUsername());
+
             return "redirect:/chat";
         }
 
@@ -67,16 +73,20 @@ public class HomeController {
     @PostMapping("/send")
     @ResponseBody
     public String sendMessage(
-            @RequestParam String sender,
             @RequestParam String receiver,
-            @RequestParam String message) {
+            @RequestParam String message,
+            HttpSession session) {
 
         System.out.println("SEND METHOD CALLED");
-        System.out.println(sender);
+
         System.out.println(receiver);
         System.out.println(message);
 
         Message msg = new Message();
+
+        String sender =
+                (String) session.getAttribute(
+                        "loggedUser");
 
         msg.setSender(sender);
         msg.setReceiver(receiver);
@@ -96,7 +106,15 @@ public class HomeController {
                 sender,
                 receiver);
     }
+    @GetMapping("/current-user")
+    @ResponseBody
+    public String currentUser(
+            HttpSession session) {
 
+        return (String)
+                session.getAttribute(
+                        "loggedUser");
+    }
     @GetMapping("/hello")
     @ResponseBody
     public String hello() {

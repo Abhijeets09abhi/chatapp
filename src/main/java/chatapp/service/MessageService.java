@@ -29,20 +29,26 @@ public class MessageService {
             String sender,
             String receiver) {
 
-        List<Message> chat =
-                new ArrayList<>();
+        System.out.println("Sender = " + sender);
+        System.out.println("Receiver = " + receiver);
 
-        chat.addAll(
-                messageRepository
-                        .findBySenderAndReceiver(
-                                sender,
-                                receiver));
+        List<Message> chat = new ArrayList<>();
 
-        chat.addAll(
-                messageRepository
-                        .findByReceiverAndSender(
-                                sender,
-                                receiver));
+        List<Message> sent =
+                messageRepository.findBySenderAndReceiver(
+                        sender,
+                        receiver);
+
+        List<Message> received =
+                messageRepository.findByReceiverAndSender(
+                        sender,
+                        receiver);
+
+        System.out.println("Sent Messages = " + sent.size());
+        System.out.println("Received Messages = " + received.size());
+
+        chat.addAll(sent);
+        chat.addAll(received);
 
         return chat;
     }
