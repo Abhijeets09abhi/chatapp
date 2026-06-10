@@ -86,6 +86,16 @@ public class HomeController {
 
         return "saved";
     }
+    @GetMapping("/messages")
+    @ResponseBody
+    public java.util.List<Message> getMessages(
+            @RequestParam String sender,
+            @RequestParam String receiver) {
+
+        return messageService.getMessages(
+                sender,
+                receiver);
+    }
 
     @GetMapping("/hello")
     @ResponseBody
